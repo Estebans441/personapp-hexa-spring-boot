@@ -1,4 +1,5 @@
-use prueba_db
+conn = new Mongo(); 
+db = conn.getDB("persona_db");
 
 db.persona.insertMany([
 	{
@@ -40,4 +41,4 @@ db.persona.insertMany([
 		"edad": NumberInt(18),
 		"_class": "co.edu.javeriana.as.personapp.mongo.document.PersonaDocument"
 	}
-], { ordered: false })
+], { ordered: false });

@@ -1,0 +1,45 @@
+services:
+  mongo:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_DATABASE: "persona_db"
+    volumes:
+      - mongo_data:/data/db
+      - ./scripts/persona_ddl_mongo.js:/docker-entrypoint-initdb.d/01_persona_ddl_mongo.js
+      - ./scripts/persona_dml_mongo.js:/docker-entrypoint-initdb.d/02_persona_dml_mongo.js
+    ports:
+      - 27017:27017
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+      ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
+      ME_CONFIG_BASICAUTH: false
+
+  mariadb:
+    image: mariadb:10.3.10
+    container_name: mariadb
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: persona_db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    volumes:
+      - maria_data:/var/lib/mysql
+      - ./scripts/persona_ddl_maria.sql:/docker-entrypoint-initdb.d/01_persona_ddl_maria.sql.sql
+      - ./scripts/persona_dml_maria.sql:/docker-entrypoint-initdb.d/02_persona_dml_maria.sql
+    restart: always
+
+volumes:
+  maria_data:
+  mongo_data:

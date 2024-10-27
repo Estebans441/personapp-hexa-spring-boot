@@ -1,4 +1,5 @@
-use admin
+conn = new Mongo(); 
+db = conn.getDB("admin");
 
 db.createUser({
   user: "persona_db",
@@ -9,4 +10,4 @@ db.createUser({
     { role: "dbAdmin", db: "persona_db" }
   ],
   mechanisms: ["SCRAM-SHA-1","SCRAM-SHA-256"]
-})
+});
