@@ -3,6 +3,8 @@ package co.edu.javeriana.as.personapp.terminal.menu;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+import co.edu.javeriana.as.personapp.terminal.adapter.EstudioInputAdapterCli;
+import co.edu.javeriana.as.personapp.terminal.adapter.ProfesionInputAdapterCli;
 import co.edu.javeriana.as.personapp.terminal.adapter.TelefonoInputAdapterCli;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,6 +23,12 @@ public class MenuPrincipal {
 	@Autowired
 	private TelefonoInputAdapterCli telefonoInputAdapterCli;
 
+	@Autowired
+	private EstudioInputAdapterCli estudioInputAdapterCli;
+
+	@Autowired
+	private ProfesionInputAdapterCli profesionInputAdapterCli;
+
 	private static final int SALIR = 0;
 	private static final int MODULO_PERSONA = 1;
 	private static final int MODULO_PROFESION = 2;
@@ -30,11 +38,16 @@ public class MenuPrincipal {
 	//Menus
 	private final PersonaMenu personaMenu;
 	private final TelefonoMenu telefonoMenu;
+	private final EstudioMenu estudioMenu;
+	private final ProfesionMenu profesionMenu;
 	private final Scanner keyboard;
 
     public MenuPrincipal() {
         this.personaMenu = new PersonaMenu();
 		this.telefonoMenu = new TelefonoMenu();
+		this.estudioMenu = new EstudioMenu();
+		this.profesionMenu = new ProfesionMenu();
+
 		this.keyboard = new Scanner(System.in);
     }
 
@@ -54,14 +67,13 @@ public class MenuPrincipal {
 				log.info("volvio");
 				break;
 			case MODULO_PROFESION:
-				log.warn("Implementar Menu");
+				profesionMenu.iniciarMenu(profesionInputAdapterCli, keyboard);
 				break;
 			case MODULO_TELEFONO:
 				telefonoMenu.iniciarMenu(telefonoInputAdapterCli, keyboard);
-
 				break;
 			case MODULO_ESTUDIO:
-				log.warn("Implementar Menu");
+				estudioMenu.iniciarMenu(estudioInputAdapterCli, keyboard);
 				break;
 			default:
 				log.warn("La opción elegida no es válida.");
