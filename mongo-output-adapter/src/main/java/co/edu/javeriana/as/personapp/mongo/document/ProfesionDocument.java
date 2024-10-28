@@ -2,6 +2,7 @@ package co.edu.javeriana.as.personapp.mongo.document;
 
 import java.util.List;
 
+import lombok.Builder;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.ReadOnlyProperty;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -14,6 +15,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Document("profesion")
 public class ProfesionDocument {
 	@Id

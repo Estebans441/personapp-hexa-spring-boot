@@ -18,23 +18,24 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Adapter("personOutputAdapterMongo")
 public class PersonOutputAdapterMongo implements PersonOutputPort {
-	
+
 	@Autowired
-    private PersonaRepositoryMongo personaRepositoryMongo;
-	
+	private PersonaRepositoryMongo personaRepositoryMongo;
+
 	@Autowired
 	private PersonaMapperMongo personaMapperMongo;
-	
+
 	@Override
 	public Person save(Person person) {
 		log.debug("Into save on Adapter MongoDB");
 		try {
-			PersonaDocument persistedPersona = personaRepositoryMongo.save(personaMapperMongo.fromDomainToAdapter(person));
+			PersonaDocument personaDoc = personaMapperMongo.fromDomainToAdapter(person);
+			PersonaDocument persistedPersona = personaRepositoryMongo.save(personaDoc);
 			return personaMapperMongo.fromAdapterToDomain(persistedPersona);
 		} catch (MongoWriteException e) {
-			log.warn(e.getMessage());
+			log.warn("Error saving document: {}", e.getMessage());
 			return person;
-		}		
+		}
 	}
 
 	@Override
@@ -47,18 +48,16 @@ public class PersonOutputAdapterMongo implements PersonOutputPort {
 	@Override
 	public List<Person> find() {
 		log.debug("Into find on Adapter MongoDB");
-		return personaRepositoryMongo.findAll().stream().map(personaMapperMongo::fromAdapterToDomain)
+		return personaRepositoryMongo.findAll().stream()
+				.map(personaMapperMongo::fromAdapterToDomain)
 				.collect(Collectors.toList());
 	}
 
 	@Override
 	public Person findById(Integer identification) {
 		log.debug("Into findById on Adapter MongoDB");
-		if (personaRepositoryMongo.findById(identification).isEmpty()) {
-			return null;
-		} else {
-			return personaMapperMongo.fromAdapterToDomain(personaRepositoryMongo.findById(identification).get());
-		}
+		return personaRepositoryMongo.findById(identification)
+				.map(personaMapperMongo::fromAdapterToDomain)
+				.orElse(null);
 	}
-
 }

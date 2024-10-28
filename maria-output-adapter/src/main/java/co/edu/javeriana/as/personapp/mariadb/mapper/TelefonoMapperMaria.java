@@ -19,11 +19,20 @@ public class TelefonoMapperMaria {
 		TelefonoEntity telefonoEntity = new TelefonoEntity();
 		telefonoEntity.setNum(phone.getNumber());
 		telefonoEntity.setOper(phone.getCompany());
-		telefonoEntity.setDuenio(validateDuenio(phone.getOwner()));
+		// Asignar el dueño sin validación
+		telefonoEntity.setDuenio(mapOwnerWithoutPhones(phone.getOwner()));
 		return telefonoEntity;
 	}
 
-	private PersonaEntity validateDuenio(@NonNull Person owner) {
+	// Método sin validación del dueño para evitar recursividad
+	public TelefonoEntity fromDomainToAdapterWithoutOwner(Phone phone) {
+		TelefonoEntity telefonoEntity = new TelefonoEntity();
+		telefonoEntity.setNum(phone.getNumber());
+		telefonoEntity.setOper(phone.getCompany());
+		return telefonoEntity;
+	}
+
+	private PersonaEntity mapOwnerWithoutPhones(Person owner) {
 		return owner != null ? personaMapperMaria.fromDomainToAdapter(owner) : new PersonaEntity();
 	}
 
@@ -31,11 +40,17 @@ public class TelefonoMapperMaria {
 		Phone phone = new Phone();
 		phone.setNumber(telefonoEntity.getNum());
 		phone.setCompany(telefonoEntity.getOper());
-		phone.setOwner(validateOwner(telefonoEntity.getDuenio()));
+		// Asignar el dueño sin validación de teléfonos
+		Person owner = personaMapperMaria.fromAdapterToDomain(telefonoEntity.getDuenio());
+		phone.setOwner(owner);
 		return phone;
 	}
 
-	private @NonNull Person validateOwner(PersonaEntity duenio) {
-		return duenio != null ? personaMapperMaria.fromAdapterToDomain(duenio) : new Person();
+	// Método sin validación del dueño para evitar recursividad
+	public Phone fromAdapterToDomainWithoutOwner(TelefonoEntity telefonoEntity) {
+		Phone phone = new Phone();
+		phone.setNumber(telefonoEntity.getNum());
+		phone.setCompany(telefonoEntity.getOper());
+		return phone;
 	}
 }

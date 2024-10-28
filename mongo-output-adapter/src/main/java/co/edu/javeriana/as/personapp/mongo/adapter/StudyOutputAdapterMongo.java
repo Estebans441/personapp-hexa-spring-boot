@@ -4,12 +4,19 @@ import co.edu.javeriana.as.personapp.application.port.out.StudyOutputPort;
 import co.edu.javeriana.as.personapp.common.annotations.Adapter;
 import co.edu.javeriana.as.personapp.domain.Study;
 import co.edu.javeriana.as.personapp.mongo.document.EstudiosDocument;
+import co.edu.javeriana.as.personapp.mongo.document.PersonaDocument;
+import co.edu.javeriana.as.personapp.mongo.document.ProfesionDocument;
 import co.edu.javeriana.as.personapp.mongo.mapper.EstudiosMapperMongo;
+import co.edu.javeriana.as.personapp.mongo.mapper.PersonaMapperMongo;
+import co.edu.javeriana.as.personapp.mongo.mapper.ProfesionMapperMongo;
 import co.edu.javeriana.as.personapp.mongo.repository.EstudioRepositoryMongo;
+import co.edu.javeriana.as.personapp.mongo.repository.PersonaRepositoryMongo;
+import co.edu.javeriana.as.personapp.mongo.repository.ProfesionRepositoryMongo;
 import com.mongodb.MongoWriteException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -19,6 +26,17 @@ public class StudyOutputAdapterMongo implements StudyOutputPort {
     private EstudioRepositoryMongo estudioRepositoryMongo;
     @Autowired
     private EstudiosMapperMongo estudiosMapperMongo;
+
+    @Autowired
+    private PersonaRepositoryMongo personaRepositoryMongo;
+    @Autowired
+    private PersonaMapperMongo personaMapperMongo;
+
+    @Autowired
+    private ProfesionRepositoryMongo profesionRepositoryMongo;
+    @Autowired
+    private ProfesionMapperMongo profesionMapperMongo;
+
     @Override
     public Study save(Study study) {
         log.debug("Into save on Adapter MongoDB");
@@ -33,19 +51,29 @@ public class StudyOutputAdapterMongo implements StudyOutputPort {
     @Override
     public Boolean delete (Integer identification, Integer idPerson) {
         log.debug("Into delete on Adapter MongoDB");
-        EstudiosDocument studyToDelete = estudioRepositoryMongo.findByCcPerAndIdProf(idPerson, identification);
-        if (studyToDelete != null) {
-            estudioRepositoryMongo.delete(studyToDelete);
-            return true;
+        Optional<PersonaDocument> persona = personaRepositoryMongo.findById(idPerson);
+        Optional<ProfesionDocument> profesion = profesionRepositoryMongo.findById(identification);
+
+        if (persona.isPresent() && profesion.isPresent()) {
+            EstudiosDocument estudio = estudioRepositoryMongo.findByPrimaryPersonaAndPrimaryProfesion(persona.get(), profesion.get()).orElse(null);
+            if (estudio != null) {
+                estudioRepositoryMongo.delete(estudio);
+                return true;
+            }
         }
         return false;
     }
     @Override
     public Study findById(Integer identification, Integer idPerson) {
         log.debug("Into findById on Adapter MongoDB");
-        EstudiosDocument study = estudioRepositoryMongo.findByCcPerAndIdProf(idPerson, identification);
-        if (study != null)
-            return estudiosMapperMongo.fromAdapterToDomain(study);
+        Optional<PersonaDocument> persona = personaRepositoryMongo.findById(idPerson);
+        Optional<ProfesionDocument> profesion = profesionRepositoryMongo.findById(identification);
+        if (persona.isPresent() && profesion.isPresent()) {
+            EstudiosDocument estudio = estudioRepositoryMongo.findByPrimaryPersonaAndPrimaryProfesion(persona.get(), profesion.get()).orElse(null);
+            if (estudio != null) {
+                return estudiosMapperMongo.fromAdapterToDomain(estudio);
+            }
+        }
         return null;
     }
     @Override
