@@ -64,7 +64,7 @@ public class PersonaMapperMongo {
 
 	private List<Study> validateStudies(List<EstudiosDocument> estudiosDocuments) {
 		return estudiosDocuments != null ? estudiosDocuments.stream()
-				.map(estudiosMapperMongo::fromAdapterToDomain)
+				.map(estudiosMapperMongo::fromAdapterToDomainBasic)
 				.collect(Collectors.toList()) : new ArrayList<>();
 	}
 
