@@ -21,6 +21,10 @@ public class EstudiosMapperMaria {
 	private ProfesionMapperMaria profesionMapperMaria;
 
 	public EstudiosEntity fromDomainToAdapter(Study study) {
+		if (study == null || study.getPerson() == null || study.getProfession() == null) {
+			return null;
+		}
+
 		EstudiosEntityPK estudioPK = new EstudiosEntityPK();
 		estudioPK.setCcPer(study.getPerson().getIdentification());
 		estudioPK.setIdProf(study.getProfession().getIdentification());
@@ -42,16 +46,30 @@ public class EstudiosMapperMaria {
 	}
 
 	public Study fromAdapterToDomain(EstudiosEntity estudiosEntity) {
-		Study study = new Study();
-		study.setPerson(personaMapperMaria.fromAdapterToDomain(estudiosEntity.getPersona()));
-		study.setProfession(profesionMapperMaria.fromAdapterToDomain(estudiosEntity.getProfesion()));
-		study.setGraduationDate(validateGraduationDate(estudiosEntity.getFecha()));
-		study.setUniversityName(validateUniversityName(estudiosEntity.getUniver()));
-		return null;
+		if (estudiosEntity == null || estudiosEntity.getPersona() == null || estudiosEntity.getProfesion() == null) {
+			return null;
+		}
+
+		return Study.builder()
+				.person(personaMapperMaria.fromAdapterToDomainBasic(estudiosEntity.getPersona())) // Usa mapeo básico
+				.profession(profesionMapperMaria.fromAdapterToDomainBasic(estudiosEntity.getProfesion())) // Usa mapeo básico
+				.graduationDate(validateGraduationDate(estudiosEntity.getFecha()))
+				.universityName(validateUniversityName(estudiosEntity.getUniver()))
+				.build();
 	}
 
 	private LocalDate validateGraduationDate(Date fecha) {
-		return fecha != null ? fecha.toInstant().atZone(ZoneId.systemDefault()).toLocalDate() : null;
+		if (fecha == null) {
+			return null;
+		}
+
+		// Comprobar si la fecha es de tipo java.sql.Date y convertirla a LocalDate
+		if (fecha instanceof java.sql.Date) {
+			return ((java.sql.Date) fecha).toLocalDate();
+		}
+
+		// Si la fecha es de otro tipo, realiza la conversión usando Instant
+		return fecha.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 	}
 
 	private String validateUniversityName(String univer) {
