@@ -21,7 +21,7 @@ public class EstudiosMapperMaria {
 	private ProfesionMapperMaria profesionMapperMaria;
 
 	public EstudiosEntity fromDomainToAdapter(Study study) {
-		if (study == null || study.getPerson() == null || study.getProfession() == null) {
+		if (study == null) {
 			return null;
 		}
 

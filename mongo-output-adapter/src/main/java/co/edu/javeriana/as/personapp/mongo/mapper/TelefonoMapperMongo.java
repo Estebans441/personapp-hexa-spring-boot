@@ -28,7 +28,7 @@ public class TelefonoMapperMongo {
 				.number(telefonoDocument.getId())
 				.company(telefonoDocument.getOper())
 				.owner(telefonoDocument.getPrimaryDuenio() != null ?
-						personaMapperMongo.fromAdapterToDomain(telefonoDocument.getPrimaryDuenio()) : null)
+						personaMapperMongo.fromAdapterToDomainBasic(telefonoDocument.getPrimaryDuenio()) : null)
 				.build();
 	}
 }

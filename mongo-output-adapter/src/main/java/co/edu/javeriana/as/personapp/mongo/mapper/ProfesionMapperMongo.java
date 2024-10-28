@@ -61,7 +61,7 @@ public class ProfesionMapperMongo {
 
 	private List<Study> validateStudies(List<EstudiosDocument> estudiosDocument) {
 		return estudiosDocument != null && !estudiosDocument.isEmpty() ? estudiosDocument.stream()
-				.map(estudio -> estudiosMapperMongo.fromAdapterToDomain(estudio)).collect(Collectors.toList())
+				.map(estudio -> estudiosMapperMongo.fromAdapterToDomainBasic(estudio)).collect(Collectors.toList())
 				: new ArrayList<Study>();
 	}
 }

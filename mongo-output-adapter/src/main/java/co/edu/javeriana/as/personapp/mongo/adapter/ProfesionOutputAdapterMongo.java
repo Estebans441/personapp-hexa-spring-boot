@@ -25,7 +25,7 @@ public class ProfesionOutputAdapterMongo implements ProfessionOutputPort {
         log.debug("Into save on Adapter MongoDB");
         try {
             ProfesionDocument persistedProfession = profesionRepositoryMongo.save(profesionMapperMongo.fromDomainToAdapter(profession));
-            return profesionMapperMongo.fromAdapterToDomain(persistedProfession);
+            return profesionMapperMongo.fromAdapterToDomainBasic(persistedProfession);
         } catch (MongoWriteException e) {
             log.warn(e.getMessage());
             return profession;
@@ -43,7 +43,7 @@ public class ProfesionOutputAdapterMongo implements ProfessionOutputPort {
         if (profesionRepositoryMongo.findById(identification).isEmpty()) {
             return null;
         } else {
-            return profesionMapperMongo.fromAdapterToDomain(profesionRepositoryMongo.findById(identification).get());
+            return profesionMapperMongo.fromAdapterToDomainBasic(profesionRepositoryMongo.findById(identification).get());
         }
     }
     @Override
