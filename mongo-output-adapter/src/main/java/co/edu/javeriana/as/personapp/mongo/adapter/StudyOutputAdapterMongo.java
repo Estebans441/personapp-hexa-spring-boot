@@ -79,6 +79,6 @@ public class StudyOutputAdapterMongo implements StudyOutputPort {
     @Override
     public List<Study> find() {
         log.debug("Into find on Adapter MongoDB");
-        return estudioRepositoryMongo.findAll().stream().map(estudiosMapperMongo::fromAdapterToDomain).collect(Collectors.toList());
+        return estudioRepositoryMongo.findAll().stream().map(estudiosMapperMongo::fromAdapterToDomainBasic).collect(Collectors.toList());
     }
 }

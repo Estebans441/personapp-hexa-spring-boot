@@ -3,6 +3,7 @@ package co.edu.javeriana.as.personapp.mongo.mapper;
 import java.time.LocalDate;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 
 import co.edu.javeriana.as.personapp.common.annotations.Mapper;
 import co.edu.javeriana.as.personapp.domain.Person;
@@ -17,6 +18,7 @@ import lombok.NonNull;
 public class EstudiosMapperMongo {
 
 	@Autowired
+	@Lazy
 	private PersonaMapperMongo personaMapperMongo;
 
 	@Autowired
@@ -37,7 +39,9 @@ public class EstudiosMapperMongo {
 	}
 
 	private PersonaDocument validatePrimaryPersona(@NonNull Person person) {
-		return person != null ? personaMapperMongo.fromDomainToAdapter(person) : new PersonaDocument();
+		PersonaDocument personaDoc = personaMapperMongo.fromDomainToAdapter(person);
+		personaDoc.setEstudios(null); // Break the recursion
+		return personaDoc;
 	}
 
 	private ProfesionDocument validatePrimaryProfesion(@NonNull Profession profession) {
@@ -58,7 +62,22 @@ public class EstudiosMapperMongo {
 		study.setProfession(profesionMapperMongo.fromAdapterToDomain(estudiosDocument.getPrimaryProfesion()));
 		study.setGraduationDate(validateGraduationDate(estudiosDocument.getFecha()));
 		study.setUniversityName(validateUniversityName(estudiosDocument.getUniver()));
-		return null;
+		return study;
+	}
+
+	public Study fromAdapterToDomainBasic(EstudiosDocument estudiosDocument) {
+		Study.StudyBuilder studyBuilder = Study.builder();
+
+		studyBuilder.person(estudiosDocument.getPrimaryPersona() != null
+				? personaMapperMongo.fromAdapterToDomainBasic(estudiosDocument.getPrimaryPersona())
+				: Person.builder().identification(0).firstName("Desconocido").build());
+		studyBuilder.profession(estudiosDocument.getPrimaryProfesion() != null
+				? profesionMapperMongo.fromAdapterToDomainBasic(estudiosDocument.getPrimaryProfesion())
+				: Profession.builder().identification(0).name("Desconocido").build());
+		studyBuilder.graduationDate(validateGraduationDate(estudiosDocument.getFecha()));
+		studyBuilder.universityName(validateUniversityName(estudiosDocument.getUniver()));
+
+		return studyBuilder.build();
 	}
 
 	private LocalDate validateGraduationDate(LocalDate fecha) {

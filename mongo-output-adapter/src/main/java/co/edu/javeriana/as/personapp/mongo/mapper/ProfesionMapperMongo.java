@@ -50,6 +50,15 @@ public class ProfesionMapperMongo {
 		return des != null ? des : "";
 	}
 
+	public Profession fromAdapterToDomainBasic(ProfesionDocument profesionDocument) {
+		return Profession.builder()
+				.identification(profesionDocument.getId() != null ? profesionDocument.getId() : 0)
+				.name(profesionDocument.getNom() != null ? profesionDocument.getNom() : "Desconocido")
+				.description(profesionDocument.getDes() != null ? profesionDocument.getDes() : "")
+				.build(); // No cargar 'studies' para evitar referencias cíclicas
+	}
+
+
 	private List<Study> validateStudies(List<EstudiosDocument> estudiosDocument) {
 		return estudiosDocument != null && !estudiosDocument.isEmpty() ? estudiosDocument.stream()
 				.map(estudio -> estudiosMapperMongo.fromAdapterToDomain(estudio)).collect(Collectors.toList())

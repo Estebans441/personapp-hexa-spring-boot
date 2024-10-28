@@ -44,7 +44,6 @@ public class PersonaMapperMongo {
 				.build();
 	}
 
-
 	private String validateGenero(Gender gender) {
 		return gender == Gender.FEMALE ? "F" : gender == Gender.MALE ? "M" : " ";
 	}
@@ -55,7 +54,11 @@ public class PersonaMapperMongo {
 
 	private List<EstudiosDocument> validateEstudios(List<Study> studies) {
 		return studies != null ? studies.stream()
-				.map(estudiosMapperMongo::fromDomainToAdapter)
+				.map(study -> {
+					EstudiosDocument doc = estudiosMapperMongo.fromDomainToAdapter(study);
+					doc.setPrimaryPersona(null);
+					return doc;
+				})
 				.collect(Collectors.toList()) : new ArrayList<>();
 	}
 
@@ -63,5 +66,15 @@ public class PersonaMapperMongo {
 		return estudiosDocuments != null ? estudiosDocuments.stream()
 				.map(estudiosMapperMongo::fromAdapterToDomain)
 				.collect(Collectors.toList()) : new ArrayList<>();
+	}
+
+	public Person fromAdapterToDomainBasic(PersonaDocument personaDocument) {
+		return Person.builder()
+				.identification(personaDocument.getId() != null ? personaDocument.getId() : 0)
+				.firstName(personaDocument.getNombre() != null ? personaDocument.getNombre() : "Desconocido")
+				.lastName(personaDocument.getApellido() != null ? personaDocument.getApellido() : "Desconocido")
+				.gender(validateGender(personaDocument.getGenero()))
+				.age(personaDocument.getEdad() != null ? personaDocument.getEdad() : 0)
+				.build(); // No cargar 'studies' ni 'phoneNumbers' para evitar referencias cíclicas
 	}
 }
