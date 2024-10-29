@@ -17,8 +17,12 @@ public class TelefonoMenu {
     private static final int OPCION_REGRESAR_MOTOR_PERSISTENCIA = 0;
     private static final int OPCION_VER_TODO = 1;
     private static final int OPCION_CREAR = 2;
+    private static final int OPCION_BUSCAR = 3;
+    private static final int OPCION_EDITAR = 4;
+    private static final int OPCION_ELIMINAR = 5;
+    private static final int OPCION_CONTAR = 6;
 
-    public void iniciarMenu (TelefonoInputAdapterCli telefonoInputAdapterCli, Scanner keyboard) {
+    public void iniciarMenu(TelefonoInputAdapterCli telefonoInputAdapterCli, Scanner keyboard) {
         boolean isValid = false;
         do {
             try {
@@ -45,7 +49,7 @@ public class TelefonoMenu {
         } while (!isValid);
     }
 
-    public void menuOpciones (TelefonoInputAdapterCli telefonoInputAdapterCli, Scanner keyboard) throws InvalidOptionException {
+    public void menuOpciones(TelefonoInputAdapterCli telefonoInputAdapterCli, Scanner keyboard) throws InvalidOptionException {
         boolean isValid = false;
         do {
             try {
@@ -59,35 +63,84 @@ public class TelefonoMenu {
                         telefonoInputAdapterCli.historial();
                         break;
                     case OPCION_CREAR:
-                        try {
-                            System.out.println("Ingrese el número de teléfono: ");
-                            String number = keyboard.next();
-                            System.out.println("Ingrese la compañía: ");
-                            String company = keyboard.next();
-                            System.out.println("Ingrese el dueño del teléfono: ");
-                            int owner = keyboard.nextInt();
-                            telefonoInputAdapterCli.create(number, company, owner);
-                        } catch (InputMismatchException e) {
-                            log.warn("Solo se permiten números.");
-                        } catch (NoExistException e) {
-                            System.out.println(e.getMessage());
-                        }
-
+                        crearTelefono(telefonoInputAdapterCli, keyboard);
+                        break;
+                    case OPCION_BUSCAR:
+                        buscarTelefono(telefonoInputAdapterCli, keyboard);
+                        break;
+                    case OPCION_EDITAR:
+                        editarTelefono(telefonoInputAdapterCli, keyboard);
+                        break;
+                    case OPCION_ELIMINAR:
+                        eliminarTelefono(telefonoInputAdapterCli, keyboard);
+                        break;
+                    case OPCION_CONTAR:
+                        telefonoInputAdapterCli.count();
                         break;
                     default:
                         log.warn("La opción elegida no es válida.");
                 }
             } catch (InputMismatchException e) {
-                log.warn(e.getMessage());
+                log.warn("Solo se permiten números.");
+                keyboard.next(); // Limpiar la entrada inválida
+            } catch (NoExistException e) {
+                System.out.println(e.getMessage());
             }
         } while (!isValid);
+    }
+
+    private void crearTelefono(TelefonoInputAdapterCli telefonoInputAdapterCli, Scanner keyboard) {
+        try {
+            System.out.print("Ingrese el número de teléfono: ");
+            String number = keyboard.next();
+            System.out.print("Ingrese la compañía: ");
+            String company = keyboard.next();
+            System.out.print("Ingrese el ID del dueño del teléfono: ");
+            int owner = keyboard.nextInt();
+
+            telefonoInputAdapterCli.create(number, company, owner);
+            System.out.println("Teléfono creado con éxito.");
+        } catch (InputMismatchException e) {
+            log.warn("Solo se permiten números.");
+            keyboard.next();
+        } catch (NoExistException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void buscarTelefono(TelefonoInputAdapterCli telefonoInputAdapterCli, Scanner keyboard) throws NoExistException {
+        System.out.print("Ingrese el número de teléfono a buscar: ");
+        String number = keyboard.next();
+
+        telefonoInputAdapterCli.findOne(number);
+    }
+
+    private void editarTelefono(TelefonoInputAdapterCli telefonoInputAdapterCli, Scanner keyboard) throws NoExistException {
+        System.out.print("Ingrese el número de teléfono a editar: ");
+        String number = keyboard.next();
+        System.out.print("Ingrese la nueva compañía: ");
+        String company = keyboard.next();
+        System.out.print("Ingrese el nuevo ID del dueño del teléfono: ");
+        int owner = keyboard.nextInt();
+
+        telefonoInputAdapterCli.edit(number, company, owner);
+    }
+
+    private void eliminarTelefono(TelefonoInputAdapterCli telefonoInputAdapterCli, Scanner keyboard) throws NoExistException {
+        System.out.print("Ingrese el número de teléfono a eliminar: ");
+        String number = keyboard.next();
+
+        telefonoInputAdapterCli.drop(number);
     }
 
     private void mostrarMenuOpciones() {
         System.out.println("----------------------");
         System.out.println(OPCION_VER_TODO + " para ver todos los teléfonos");
         System.out.println(OPCION_CREAR + " para crear un teléfono");
-        // implementar otras opciones
+        System.out.println(OPCION_BUSCAR + " para buscar un teléfono");
+        System.out.println(OPCION_EDITAR + " para editar un teléfono");
+        System.out.println(OPCION_ELIMINAR + " para eliminar un teléfono");
+        System.out.println(OPCION_CONTAR + " para contar todos los teléfonos");
         System.out.println(OPCION_REGRESAR_MOTOR_PERSISTENCIA + " para regresar");
     }
 
@@ -104,6 +157,7 @@ public class TelefonoMenu {
             return keyboard.nextInt();
         } catch (InputMismatchException e) {
             log.warn("Solo se permiten números.");
+            keyboard.next(); // Limpiar la entrada inválida
             return leerOpcion(keyboard);
         }
     }
