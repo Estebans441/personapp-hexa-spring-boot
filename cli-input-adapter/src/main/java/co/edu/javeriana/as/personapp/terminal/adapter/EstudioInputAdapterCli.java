@@ -11,6 +11,7 @@ import co.edu.javeriana.as.personapp.application.usecase.ProfessionUseCase;
 import co.edu.javeriana.as.personapp.application.usecase.StudyUseCase;
 import co.edu.javeriana.as.personapp.common.annotations.Adapter;
 import co.edu.javeriana.as.personapp.common.exceptions.NoExistException;
+import co.edu.javeriana.as.personapp.domain.Study;
 import co.edu.javeriana.as.personapp.terminal.mapper.EstudioMapperCli;
 import co.edu.javeriana.as.personapp.terminal.mapper.PersonaMapperCli;
 import co.edu.javeriana.as.personapp.terminal.mapper.ProfesionMapperCli;
@@ -23,6 +24,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Optional;
 
 @Slf4j
 @Adapter
@@ -109,4 +111,49 @@ public class EstudioInputAdapterCli  {
                 .build();
         studyInputPort.create(estudioMapperCli.fromCliToDomain(estudioModelCli), ccPerson, idProf);
     }
+
+    public void drop (int id, int ccPerson) throws NoExistException{
+        Optional.ofNullable(studyInputPort.findOne(id, ccPerson))
+                .orElseThrow(() -> new NoExistException("The study with id " + id + " does not exist in the database, cannot drop study."));
+        studyInputPort.drop(id, ccPerson);
+        System.out.println("Estudio eliminado con éxito.");
+    }
+
+    public void findOne (int id, int ccPerson) throws NoExistException{
+        Optional.ofNullable(studyInputPort.findOne(id, ccPerson))
+                .orElseThrow(() -> new NoExistException("The study with id " + id + " does not exist in the database, cannot find study."));
+        System.out.println(studyInputPort.findOne(id, ccPerson));
+    }
+
+    public void count (){
+        System.out.println(studyInputPort.count());
+    }
+
+    public void edit(int ccPerson, int idProf, String college, LocalDate date) throws NoExistException {
+        PersonaModelCli personModel = personaMapperCli.fromDomainToBasicModelCli(personInputPort.findOne(ccPerson));
+        ProfesionModelCli professionModel = profesionMapperCli.fromDomainToBasicModelCli(professionInputPort.findOne(idProf));
+
+        if (personModel == null) {
+            throw new NoExistException("The person with id " + ccPerson + " does not exist in the database, cannot edit study.");
+        }
+
+        if (professionModel == null) {
+            throw new NoExistException("The profession with id " + idProf + " does not exist in the database, cannot edit study.");
+        }
+
+        EstudioModelCli estudioModelCli = EstudioModelCli.builder()
+                .person(personaMapperCli.fromBasicModelCliToDomain(personModel))
+                .profession(profesionMapperCli.fromBasicModelCliToDomain(professionModel))
+                .graduationDate(date)
+                .universityName(college)
+                .build();
+
+        Study updatedStudy = studyInputPort.edit(idProf, ccPerson, estudioMapperCli.fromCliToDomain(estudioModelCli));
+        if (updatedStudy == null) {
+            throw new NoExistException("Failed to update the study. No existing study found with person ID " + ccPerson + " and profession ID " + idProf);
+        }
+
+        System.out.println("Estudio actualizado con éxito.");
+    }
+
 }

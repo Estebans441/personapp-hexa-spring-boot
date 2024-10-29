@@ -79,4 +79,6 @@ public class TelefonoInputAdapterCli {
         TelefonoModelCli telefonoModel = TelefonoModelCli.builder().num(number).oper(company).duenio(ownerModel).build();
         phoneInputPort.create(telefonoMapperCli.fromCliToDomain(telefonoModel), ownerId);
     }
+
+
 }

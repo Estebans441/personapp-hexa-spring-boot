@@ -82,7 +82,7 @@ public class PersonaMapperMaria {
                 .identification(personaEntity.getCc())
                 .firstName(personaEntity.getNombre())
                 .lastName(personaEntity.getApellido())
-                .gender(Gender.OTHER) // Valor predeterminado para evitar NullPointerException
+                .gender(Gender.OTHER)
                 .build();
     }
 
@@ -97,7 +97,7 @@ public class PersonaMapperMaria {
     private List<Study> validateStudies(List<EstudiosEntity> estudiosEntity) {
         return estudiosEntity != null && !estudiosEntity.isEmpty()
                 ? estudiosEntity.stream()
-                .map(estudiosMapperMaria::fromAdapterToDomain) // Usa mapeo básico de estudios
+                .map(estudiosMapperMaria::fromAdapterToDomain)
                 .collect(Collectors.toList())
                 : new ArrayList<>();
     }

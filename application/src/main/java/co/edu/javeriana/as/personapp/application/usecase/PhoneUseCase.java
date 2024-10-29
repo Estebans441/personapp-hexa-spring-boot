@@ -16,8 +16,8 @@ import java.util.List;
 public class PhoneUseCase implements PhoneInputPort {
     private PhoneOutputPort phonePersistence;
     private PersonOutputPort personPersistence;
-
-    public PhoneUseCase(@Qualifier("phoneOutPutAdapterMaria") PhoneOutputPort phonePersistence, @Qualifier("personOutputAdapterMaria") PersonOutputPort personPersistence) {
+    public PhoneUseCase(@Qualifier("phoneOutPutAdapterMaria") PhoneOutputPort phonePersistence,
+                        @Qualifier("personOutputAdapterMaria") PersonOutputPort personPersistence) {
         this.phonePersistence = phonePersistence;
         this.personPersistence = personPersistence;
     }
@@ -26,11 +26,9 @@ public class PhoneUseCase implements PhoneInputPort {
         this.phonePersistence = phonePersistence;
         this.personPersistence = personPersistence;
     }
-
     @Override
     public Phone create(Phone phone, int ccPerson) throws NoExistException {
         log.debug("Into create on Application Domain");
-        // Check if the person exists
         Person person = personPersistence.findById(ccPerson);
         if (person == null) {
             log.error("The person with id " + ccPerson + " does not exist into db, cannot be created");

@@ -12,7 +12,6 @@ import java.util.List;
 @UseCase
 public class ProfessionUseCase implements ProfessionInputPort {
     private ProfessionOutputPort profesionPersistence;
-
     public ProfessionUseCase(@Qualifier("profesionOutPutAdapterMaria") ProfessionOutputPort profesionPersistence) {
         this.profesionPersistence = profesionPersistence;
     }

@@ -18,10 +18,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Adapter("personOutputAdapterMongo")
 public class PersonOutputAdapterMongo implements PersonOutputPort {
-
 	@Autowired
 	private PersonaRepositoryMongo personaRepositoryMongo;
-
 	@Autowired
 	private PersonaMapperMongo personaMapperMongo;
 
@@ -37,14 +35,12 @@ public class PersonOutputAdapterMongo implements PersonOutputPort {
 			return person;
 		}
 	}
-
 	@Override
 	public Boolean delete(Integer identification) {
 		log.debug("Into delete on Adapter MongoDB");
 		personaRepositoryMongo.deleteById(identification);
 		return personaRepositoryMongo.findById(identification).isEmpty();
 	}
-
 	@Override
 	public List<Person> find() {
 		log.debug("Into find on Adapter MongoDB");
@@ -52,7 +48,6 @@ public class PersonOutputAdapterMongo implements PersonOutputPort {
 				.map(personaMapperMongo::fromAdapterToDomain)
 				.collect(Collectors.toList());
 	}
-
 	@Override
 	public Person findById(Integer identification) {
 		log.debug("Into findById on Adapter MongoDB");
@@ -61,3 +56,4 @@ public class PersonOutputAdapterMongo implements PersonOutputPort {
 				.orElse(null);
 	}
 }
+

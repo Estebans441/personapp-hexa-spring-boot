@@ -51,11 +51,14 @@ public class StudyUseCase implements StudyInputPort {
     }
     @Override
     public Study edit(Integer identification, Integer user_identificacion, Study study) {
+        //System.out.println("Estoy aqui");
         Study oldStudy = studyPersistence.findById(identification, user_identificacion);
         if (oldStudy != null)
             return studyPersistence.save(study);
+
         return null;
     }
+
 
     @Override
     public Boolean drop(Integer identification, Integer user_identificacion) {

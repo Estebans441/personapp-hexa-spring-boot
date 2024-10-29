@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 public class ProfesionOutputAdapterMaria implements ProfessionOutputPort {
     @Autowired
     private ProfesionRepositoryMaria profesionRepositoryMaria;
-
     @Autowired
     private ProfesionMapperMaria profesionMapperMaria;
 
@@ -27,14 +26,12 @@ public class ProfesionOutputAdapterMaria implements ProfessionOutputPort {
         ProfesionEntity persistedProfesion = profesionRepositoryMaria.save(profesionMapperMaria.fromDomainToAdapter(profession));
         return profesionMapperMaria.fromAdapterToDomain(persistedProfesion);
     }
-
     @Override
     public Boolean delete(Integer identification) {
         log.debug("Into delete on Adapter MariaDB");
         profesionRepositoryMaria.deleteById(identification);
         return profesionRepositoryMaria.findById(identification).isEmpty();
     }
-
     @Override
     public Profession findById(Integer identification) {
         log.debug("Into findById on Adapter MariaDB");
@@ -44,7 +41,6 @@ public class ProfesionOutputAdapterMaria implements ProfessionOutputPort {
             return profesionMapperMaria.fromAdapterToDomain(profesionRepositoryMaria.findById(identification).get());
         }
     }
-
     @Override
     public List<Profession> find() {
         log.debug("Into find on Adapter MariaDB");

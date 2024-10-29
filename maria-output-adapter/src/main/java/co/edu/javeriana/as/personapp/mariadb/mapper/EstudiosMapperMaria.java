@@ -24,7 +24,6 @@ public class EstudiosMapperMaria {
 		if (study == null) {
 			return null;
 		}
-
 		EstudiosEntityPK estudioPK = new EstudiosEntityPK();
 		estudioPK.setCcPer(study.getPerson().getIdentification());
 		estudioPK.setIdProf(study.getProfession().getIdentification());
@@ -51,8 +50,8 @@ public class EstudiosMapperMaria {
 		}
 
 		return Study.builder()
-				.person(personaMapperMaria.fromAdapterToDomainBasic(estudiosEntity.getPersona())) // Usa mapeo básico
-				.profession(profesionMapperMaria.fromAdapterToDomainBasic(estudiosEntity.getProfesion())) // Usa mapeo básico
+				.person(personaMapperMaria.fromAdapterToDomainBasic(estudiosEntity.getPersona()))
+				.profession(profesionMapperMaria.fromAdapterToDomainBasic(estudiosEntity.getProfesion()))
 				.graduationDate(validateGraduationDate(estudiosEntity.getFecha()))
 				.universityName(validateUniversityName(estudiosEntity.getUniver()))
 				.build();
@@ -63,12 +62,9 @@ public class EstudiosMapperMaria {
 			return null;
 		}
 
-		// Comprobar si la fecha es de tipo java.sql.Date y convertirla a LocalDate
 		if (fecha instanceof java.sql.Date) {
 			return ((java.sql.Date) fecha).toLocalDate();
 		}
-
-		// Si la fecha es de otro tipo, realiza la conversión usando Instant
 		return fecha.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 	}
 

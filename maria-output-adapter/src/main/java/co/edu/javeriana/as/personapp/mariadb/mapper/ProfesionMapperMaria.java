@@ -27,16 +27,6 @@ public class ProfesionMapperMaria {
 		return profesionEntity;
 	}
 
-	public ProfesionEntity fromDomainToAdapterBasic(Profession profession) {
-		if (profession == null) return null;
-
-		ProfesionEntity profesionEntity = new ProfesionEntity();
-		profesionEntity.setId(profession.getIdentification());
-		profesionEntity.setNom(profession.getName());
-		profesionEntity.setDes(validateDescription(profession.getDescription()));
-		return profesionEntity; // Sin estudios para evitar ciclos
-	}
-
 	private String validateDescription(String description) {
 		return description != null ? description : "";
 	}
@@ -78,3 +68,8 @@ public class ProfesionMapperMaria {
 				: new ArrayList<>();
 	}
 }
+
+
+
+
+

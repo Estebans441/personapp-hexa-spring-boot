@@ -44,3 +44,4 @@ public class PhoneOutputAdapterMaria implements PhoneOutputPort {
         return telefonoRepositoryMaria.findAll().stream().map(telefonoMapperMaria::fromAdapterToDomain).collect(Collectors.toList());
     }
 }
+

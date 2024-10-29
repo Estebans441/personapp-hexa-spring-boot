@@ -16,14 +16,12 @@ import lombok.NonNull;
 
 @Mapper
 public class EstudiosMapperMongo {
-
 	@Autowired
 	@Lazy
 	private PersonaMapperMongo personaMapperMongo;
 
 	@Autowired
 	private ProfesionMapperMongo profesionMapperMongo;
-
 	public EstudiosDocument fromDomainToAdapter(Study study) {
 		EstudiosDocument estudio = new EstudiosDocument();
 		estudio.setId(validateId(study.getPerson().getIdentification(), study.getProfession().getIdentification()));
@@ -33,21 +31,17 @@ public class EstudiosMapperMongo {
 		estudio.setUniver(validateUniver(study.getUniversityName()));
 		return estudio;
 	}
-
 	private String validateId(@NonNull Integer identificationPerson, @NonNull Integer identificationProfession) {
 		return identificationPerson + "-" + identificationProfession;
 	}
-
 	private PersonaDocument validatePrimaryPersona(@NonNull Person person) {
 		PersonaDocument personaDoc = personaMapperMongo.fromDomainToAdapter(person);
-		personaDoc.setEstudios(null); // Break the recursion
+		personaDoc.setEstudios(null);
 		return personaDoc;
 	}
-
 	private ProfesionDocument validatePrimaryProfesion(@NonNull Profession profession) {
 		return profession != null ? profesionMapperMongo.fromDomainToAdapter(profession) : new ProfesionDocument();
 	}
-
 	private LocalDate validateFecha(LocalDate graduationDate) {
 		return graduationDate != null ? graduationDate : null;
 	}
@@ -55,7 +49,6 @@ public class EstudiosMapperMongo {
 	private String validateUniver(String universityName) {
 		return universityName != null ? universityName : "";
 	}
-
 	public Study fromAdapterToDomain(EstudiosDocument estudiosDocument) {
 		Study study = new Study();
 		study.setPerson(personaMapperMongo.fromAdapterToDomain(estudiosDocument.getPrimaryPersona()));
@@ -64,7 +57,6 @@ public class EstudiosMapperMongo {
 		study.setUniversityName(validateUniversityName(estudiosDocument.getUniver()));
 		return study;
 	}
-
 	public Study fromAdapterToDomainBasic(EstudiosDocument estudiosDocument) {
 		Study.StudyBuilder studyBuilder = Study.builder();
 
@@ -76,14 +68,11 @@ public class EstudiosMapperMongo {
 				: Profession.builder().identification(0).name("Desconocido").build());
 		studyBuilder.graduationDate(validateGraduationDate(estudiosDocument.getFecha()));
 		studyBuilder.universityName(validateUniversityName(estudiosDocument.getUniver()));
-
 		return studyBuilder.build();
 	}
-
 	private LocalDate validateGraduationDate(LocalDate fecha) {
 		return fecha != null ? fecha : null;
 	}
-
 	private String validateUniversityName(String univer) {
 		return univer != null ? univer : "";
 	}

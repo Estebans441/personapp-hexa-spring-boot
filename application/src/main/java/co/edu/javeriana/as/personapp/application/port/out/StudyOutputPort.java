@@ -12,3 +12,5 @@ public interface StudyOutputPort {
     public Study findById(Integer identification, Integer idPerson);
     public List<Study> find();
 }
+
+
