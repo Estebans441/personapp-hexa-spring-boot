@@ -3,6 +3,7 @@ package co.edu.javeriana.as.personapp.terminal.adapter;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import co.edu.javeriana.as.personapp.common.exceptions.NoExistException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
@@ -54,6 +55,44 @@ public class PersonaInputAdapterCli {
 	    personInputPort.findAll().stream()
 	        .map(personaMapperCli::fromDomainToBasicModelCli)
 	        .forEach(System.out::println);
+	}
+
+	public void create (int cc, String nombre, String apellido, String genero, Integer edad){
+		// Build with builder
+		PersonaModelCli persona = PersonaModelCli.builder()
+				.cc(cc)
+				.nombre(nombre)
+				.apellido(apellido)
+				.genero(genero)
+				.edad(edad)
+				.build();
+		personInputPort.create(personaMapperCli.fromBasicModelCliToDomain(persona));
+	}
+
+	public void edit (int cc, String nombre, String apellido, String genero, Integer edad) throws NoExistException {
+		PersonaModelCli persona = PersonaModelCli.builder()
+				.cc(cc)
+				.nombre(nombre)
+				.apellido(apellido)
+				.genero(genero)
+				.edad(edad)
+				.build();
+		personInputPort.edit(cc, personaMapperCli.fromBasicModelCliToDomain(persona));
+	}
+
+	public void drop (int cc) throws NoExistException {
+		personInputPort.drop(cc);
+	}
+
+	public void findOne (int cc) throws NoExistException {
+		PersonaModelCli persona = personaMapperCli.fromDomainToBasicModelCli(personInputPort.findOne(cc));
+		if (persona != null) {
+			System.out.println(persona.toString());
+		}
+	}
+
+	public void count () {
+		System.out.println(personInputPort.count());
 	}
 
 }
