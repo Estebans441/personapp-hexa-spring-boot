@@ -83,7 +83,7 @@ public class EstudioMenu {
                 }
             } catch (InputMismatchException e) {
                 log.warn(e.getMessage());
-                keyboard.next(); // Clear the invalid input
+                keyboard.next();
             }
         } while (!isValid);
     }

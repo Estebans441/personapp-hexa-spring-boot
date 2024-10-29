@@ -29,7 +29,6 @@ public class TelefonoInputAdapterCli {
 
     @Autowired
     private TelefonoMapperCli telefonoMapperCli;
-
     private PhoneInputPort phoneInputPort;
 
     @Autowired
@@ -42,13 +41,7 @@ public class TelefonoInputAdapterCli {
 
     @Autowired
     private PersonaMapperCli personaMapperCli;
-
     private PersonInputPort personInputPort;
-
-    /**
-     * Método actualizado para sincronizar `phoneInputPort` y `personInputPort`
-     * con la misma base de datos según la opción seleccionada.
-     */
     public void setPhoneOutputPortInjection(String dbOption) {
         if (dbOption.equalsIgnoreCase("MARIA")) {
             this.phoneInputPort = new PhoneUseCase(phoneOutputPortMaria, personOutputPortMaria);
@@ -60,7 +53,6 @@ public class TelefonoInputAdapterCli {
             throw new IllegalArgumentException("Invalid database option: " + dbOption);
         }
     }
-
     public void historial() {
         log.info("Into historial TelefonoEntity in Input Adapter");
         phoneInputPort.findAll().stream()
@@ -69,35 +61,26 @@ public class TelefonoInputAdapterCli {
     }
 
     public void create(String number, String company, int ownerId) throws NoExistException {
-        // Verificación de existencia del dueño
         PersonaModelCli ownerModel = personaMapperCli.fromDomainToBasicModelCli(personInputPort.findOne(ownerId));
         if (ownerModel == null) {
             throw new NoExistException("The owner with id " + ownerId + " does not exist in the database, cannot create phone.");
         }
-
-        // Crear y guardar el teléfono
         TelefonoModelCli telefonoModel = TelefonoModelCli.builder().num(number).oper(company).duenio(ownerModel).build();
         phoneInputPort.create(telefonoMapperCli.fromCliToDomain(telefonoModel), ownerId);
     }
-
     public void drop(String number) throws NoExistException {
         TelefonoModelCli telefonoModel = telefonoMapperCli.fromDomainToCli(phoneInputPort.findOne(number));
         if (telefonoModel == null) {
             throw new NoExistException("The phone with number " + number + " does not exist in the database, cannot be deleted.");
         }
-
         phoneInputPort.drop(number);
         System.out.println("Teléfono eliminado con éxito.");
     }
-
     public void edit(String number, String company, int ownerId) throws NoExistException {
-        // Verificación de existencia del dueño
         PersonaModelCli ownerModel = personaMapperCli.fromDomainToBasicModelCli(personInputPort.findOne(ownerId));
         if (ownerModel == null) {
             throw new NoExistException("The owner with id " + ownerId + " does not exist in the database, cannot edit phone.");
         }
-
-        // Editar y guardar el teléfono
         TelefonoModelCli telefonoModel = TelefonoModelCli.builder().num(number).oper(company).duenio(ownerModel).build();
         phoneInputPort.edit(number, telefonoMapperCli.fromCliToDomain(telefonoModel), ownerId);
         System.out.println("Teléfono editado con éxito.");
@@ -108,13 +91,9 @@ public class TelefonoInputAdapterCli {
         if (telefonoModel == null) {
             throw new NoExistException("The phone with number " + number + " does not exist in the database, cannot be found.");
         }
-
-        System.out.println(telefonoModel.toString());
+        System.out.println(telefonoModel);
     }
-
     public void count() {
         System.out.println(phoneInputPort.count());
     }
-
-
 }

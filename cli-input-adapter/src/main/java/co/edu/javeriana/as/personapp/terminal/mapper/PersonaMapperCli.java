@@ -21,11 +21,9 @@ public class PersonaMapperCli {
 				.identification(personaModelCli.getCc())
 				.firstName(personaModelCli.getNombre())
 				.lastName(personaModelCli.getApellido())
-				.gender(personaModelCli.getGenero() != null ? parseGender(personaModelCli.getGenero()) : Gender.OTHER) // Asigna un valor por defecto
+				.gender(personaModelCli.getGenero() != null ? parseGender(personaModelCli.getGenero()) : Gender.OTHER)
 				.build() : null;
 	}
-
-	// Método adicional para interpretar el valor de genero
 	private Gender parseGender(String genero) {
 		switch (genero.toUpperCase()) {
 			case "M":
@@ -37,3 +35,5 @@ public class PersonaMapperCli {
 		}
 	}
 }
+
+

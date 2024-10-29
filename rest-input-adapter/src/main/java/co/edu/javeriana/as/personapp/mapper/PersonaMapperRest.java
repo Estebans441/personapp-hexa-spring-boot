@@ -1,6 +1,7 @@
 package co.edu.javeriana.as.personapp.mapper;
 
 import co.edu.javeriana.as.personapp.common.annotations.Mapper;
+import co.edu.javeriana.as.personapp.domain.Gender;
 import co.edu.javeriana.as.personapp.domain.Person;
 import co.edu.javeriana.as.personapp.model.request.PersonaRequest;
 import co.edu.javeriana.as.personapp.model.response.PersonaResponse;
@@ -27,8 +28,12 @@ public class PersonaMapperRest {
 	}
 
 	public Person fromAdapterToDomain(PersonaRequest request) {
-		// TODO Auto-generated method stub
-		return new Person();
+		return Person.builder()
+				.identification(Integer.parseInt(request.getDni()))
+				.firstName(request.getFirstName())
+				.lastName(request.getLastName())
+				.gender(Gender.valueOf(request.getSex()))
+				.age(Integer.parseInt(request.getAge())).build();
 	}
 		
 }

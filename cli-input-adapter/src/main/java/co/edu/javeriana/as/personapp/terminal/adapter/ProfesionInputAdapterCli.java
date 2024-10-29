@@ -39,14 +39,12 @@ public class ProfesionInputAdapterCli {
             throw new InvalidOptionException("Invalid database option: " + dbOptions);
         }
     }
-
     public void historial() {
         log.info("Into historial ProfesionEntity in Input Adapter");
         professionInputPort.findAll().stream()
             .map(profesionMapperCli::fromDomainToBasicModelCli)
             .forEach(System.out::println);
     }
-
     public void create (int id, String name, String description) {
         log.info("Into create ProfesionEntity in Input Adapter");
         ProfesionModelCli profesionModelCli = new ProfesionModelCli();
@@ -55,14 +53,12 @@ public class ProfesionInputAdapterCli {
         profesionModelCli.setName(name);
         professionInputPort.create(profesionMapperCli.fromBasicModelCliToDomain(profesionModelCli));
     }
-
     public void drop (int id) throws NoExistException {
         Optional.ofNullable(professionInputPort.findOne(id))
             .orElseThrow(() -> new NoExistException("The profession with id " + id + " does not exist into db, cannot be deleted"));
         professionInputPort.drop(id);
         System.out.println("Profesión eliminada con éxito.");
     }
-
     public void edit (int id, String name, String description) throws NoExistException {
         log.info("Into edit ProfesionEntity in Input Adapter");
         ProfesionModelCli profesionModelCli = new ProfesionModelCli();
@@ -72,7 +68,6 @@ public class ProfesionInputAdapterCli {
         professionInputPort.edit(id, profesionMapperCli.fromBasicModelCliToDomain(profesionModelCli));
         System.out.println("Profesión editada con éxito.");
     }
-
     public void findOne (int id) throws NoExistException {
         log.info("Into findOne ProfesionEntity in Input Adapter");
         ProfesionModelCli profesionModelCli = profesionMapperCli.fromDomainToBasicModelCli(professionInputPort.findOne(id));
@@ -81,7 +76,6 @@ public class ProfesionInputAdapterCli {
         }
         System.out.println(profesionModelCli.toString());
     }
-
     public void count () {
         System.out.println(professionInputPort.count());
     }

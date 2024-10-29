@@ -20,20 +20,16 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Adapter
 public class PersonaInputAdapterCli {
-
 	@Autowired
 	@Qualifier("personOutputAdapterMaria")
 	private PersonOutputPort personOutputPortMaria;
-
 	@Autowired
 	@Qualifier("personOutputAdapterMongo")
 	private PersonOutputPort personOutputPortMongo;
 
 	@Autowired
 	private PersonaMapperCli personaMapperCli;
-
 	PersonInputPort personInputPort;
-
 	public void setPersonOutputPortInjection(String dbOption) throws InvalidOptionException {
 		if (dbOption.equalsIgnoreCase(DatabaseOption.MARIA.toString())) {
 			personInputPort = new PersonUseCase(personOutputPortMaria);
@@ -43,13 +39,6 @@ public class PersonaInputAdapterCli {
 			throw new InvalidOptionException("Invalid database option: " + dbOption);
 		}
 	}
-
-	public void historial1() {
-		log.info("Into historial PersonaEntity in Input Adapter");
-		List<PersonaModelCli> persona = personInputPort.findAll().stream().map(personaMapperCli::fromDomainToBasicModelCli)
-					.collect(Collectors.toList());
-		persona.forEach(p -> System.out.println(p.toString()));
-	}
 	public void historial() {
 	    log.info("Into historial PersonaEntity in Input Adapter");
 	    personInputPort.findAll().stream()
@@ -58,7 +47,6 @@ public class PersonaInputAdapterCli {
 	}
 
 	public void create (int cc, String nombre, String apellido, String genero, Integer edad){
-		// Build with builder
 		PersonaModelCli persona = PersonaModelCli.builder()
 				.cc(cc)
 				.nombre(nombre)
@@ -68,7 +56,6 @@ public class PersonaInputAdapterCli {
 				.build();
 		personInputPort.create(personaMapperCli.fromBasicModelCliToDomain(persona));
 	}
-
 	public void edit (int cc, String nombre, String apellido, String genero, Integer edad) throws NoExistException {
 		PersonaModelCli persona = PersonaModelCli.builder()
 				.cc(cc)
@@ -79,20 +66,18 @@ public class PersonaInputAdapterCli {
 				.build();
 		personInputPort.edit(cc, personaMapperCli.fromBasicModelCliToDomain(persona));
 	}
-
 	public void drop (int cc) throws NoExistException {
 		personInputPort.drop(cc);
 	}
-
 	public void findOne (int cc) throws NoExistException {
 		PersonaModelCli persona = personaMapperCli.fromDomainToBasicModelCli(personInputPort.findOne(cc));
 		if (persona != null) {
 			System.out.println(persona.toString());
 		}
 	}
-
 	public void count () {
 		System.out.println(personInputPort.count());
 	}
 
 }
+

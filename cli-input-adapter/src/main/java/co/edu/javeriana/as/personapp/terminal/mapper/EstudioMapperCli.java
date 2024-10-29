@@ -11,24 +11,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 @Mapper
 public class EstudioMapperCli {
-
     @Autowired
     private PersonaMapperCli personaMapperCli;
 
     @Autowired
     private ProfesionMapperCli profesionMapperCli;
-
-    // Mapea desde el dominio al modelo CLI
     public EstudioModelCli fromDomainToCli(Study study) {
         return EstudioModelCli.builder()
-                .person(personaMapperCli.fromBasicModelCliToDomain(personaMapperCli.fromDomainToBasicModelCli(study.getPerson()))) // Mapeo básico de persona
-                .profession(profesionMapperCli.fromBasicModelCliToDomain(profesionMapperCli.fromDomainToBasicModelCli(study.getProfession()))) // Mapeo básico de profesión
+                .person(personaMapperCli.fromBasicModelCliToDomain(personaMapperCli.fromDomainToBasicModelCli(study.getPerson())))
+                .profession(profesionMapperCli.fromBasicModelCliToDomain(profesionMapperCli.fromDomainToBasicModelCli(study.getProfession())))
                 .graduationDate(study.getGraduationDate())
                 .universityName(study.getUniversityName())
                 .build();
     }
 
-    // Mapea desde el modelo CLI al dominio
     public Study fromCliToDomain(EstudioModelCli estudioModelCli) {
         // Se asignan valores solo si están presentes en el modelo CLI
         Person person = estudioModelCli.getPerson() != null
@@ -47,3 +43,6 @@ public class EstudioMapperCli {
                 .build();
     }
 }
+
+
+

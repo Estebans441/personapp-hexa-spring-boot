@@ -16,3 +16,6 @@ public class PersonaModelCli {
 	private String genero;
 	private Integer edad;
 }
+
+
+

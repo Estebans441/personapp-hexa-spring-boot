@@ -21,7 +21,13 @@ public class EstudioModelCli {
 
     @Override
     public String toString() {
-        return "EstudioModelCli [person=" + person.getFirstName() + " " + person.getLastName() + ", profession=" + profession.getName()
-                + ", graduationDate=" + graduationDate + ", universityName=" + universityName + "]";
+        return "EstudioModelCli [person=" + person.getFirstName() + " " + person.getLastName() + ", " +
+                "profession=" + profession.getName() + ", graduationDate=" + graduationDate +
+                ", universityName=" + universityName + "]";
     }
 }
+
+
+
+
+

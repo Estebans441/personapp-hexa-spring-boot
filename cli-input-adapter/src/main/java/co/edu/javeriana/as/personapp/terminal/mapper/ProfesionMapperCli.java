@@ -6,8 +6,6 @@ import co.edu.javeriana.as.personapp.terminal.model.ProfesionModelCli;
 
 @Mapper
 public class ProfesionMapperCli {
-
-    // Mapea desde el dominio al modelo CLI (solo información básica)
     public ProfesionModelCli fromDomainToBasicModelCli(Profession profession) {
         return profession != null ? ProfesionModelCli.builder()
                 .id(profession.getIdentification())
@@ -15,8 +13,6 @@ public class ProfesionMapperCli {
                 .description(profession.getDescription())
                 .build() : null;
     }
-
-    // Mapea desde el modelo CLI al dominio (solo información básica)
     public Profession fromBasicModelCliToDomain(ProfesionModelCli profesionModelCli) {
         return profesionModelCli != null ? Profession.builder()
                 .identification(profesionModelCli.getId())
@@ -25,3 +21,4 @@ public class ProfesionMapperCli {
                 .build() : null;
     }
 }
+

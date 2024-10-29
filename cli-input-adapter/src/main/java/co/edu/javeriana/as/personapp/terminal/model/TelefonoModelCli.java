@@ -16,7 +16,9 @@ public class TelefonoModelCli {
 
     @Override
     public String toString() {
-        return "TelefonoModelCli [num=" + num + ", oper=" + oper + ", duenio=" + getDuenio()
-                .getNombre() + " " + getDuenio().getApellido() + "]";
+        return "TelefonoModelCli [num=" + num + ", oper=" + oper + ", duenio=" +
+                getDuenio().getNombre() + " " + getDuenio().getApellido() + "]";
     }
 }
+
+
