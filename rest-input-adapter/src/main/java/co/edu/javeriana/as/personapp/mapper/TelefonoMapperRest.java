@@ -9,21 +9,29 @@ import co.edu.javeriana.as.personapp.model.response.TelefonoResponse;
 @Mapper
 public class TelefonoMapperRest {
 
+    public TelefonoResponse fromDomainToAdapterRestMaria(Phone phone) {
+        return fromDomainToAdapterRest(phone, "MariaDB");
+    }
+
+    public TelefonoResponse fromDomainToAdapterRestMongo(Phone phone) {
+        return fromDomainToAdapterRest(phone, "MongoDB");
+    }
+
     public TelefonoResponse fromDomainToAdapterRest(Phone phone, String database) {
         return new TelefonoResponse(
                 phone.getNumber(),
                 phone.getCompany(),
-                String.valueOf(phone.getOwner().getIdentification()),
+                phone.getOwner() != null ? String.valueOf(phone.getOwner().getIdentification()) : null,
                 database,
                 "OK"
         );
     }
 
-    public Phone fromAdapterToDomain(TelefonoRequest request) {
+    public Phone fromAdapterToDomain(TelefonoRequest request, Person owner) {
         return Phone.builder()
                 .number(request.getNum())
                 .company(request.getOper())
-                .owner(Person.builder().identification(Integer.parseInt(request.getOwnerId())).build())
+                .owner(owner)
                 .build();
     }
 }
