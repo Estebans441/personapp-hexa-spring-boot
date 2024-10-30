@@ -6,7 +6,7 @@ public class EstudioResponse extends EstudioRequest {
     private String status;
 
     public EstudioResponse(String personId, String professionId, String graduationDate, String universityName, String database, String status) {
-        super(personId, professionId, graduationDate, universityName, database);
+        super(personId, professionId, graduationDate, universityName);
         this.status = status;
     }
 

@@ -8,9 +8,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EstudioRequest {
-    private String personId;          // Solo el ID de la persona
-    private String professionId;      // Solo el ID de la profesión
+    private String personId;
+    private String professionId;
     private String graduationDate;
     private String universityName;
-    private String database;
 }
