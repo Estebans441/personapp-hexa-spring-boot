@@ -13,7 +13,7 @@ public class TelefonoMapperRest {
         return new TelefonoResponse(
                 phone.getNumber(),
                 phone.getCompany(),
-                String.valueOf(phone.getOwner().getIdentification()),  
+                String.valueOf(phone.getOwner().getIdentification()),
                 database,
                 "OK"
         );

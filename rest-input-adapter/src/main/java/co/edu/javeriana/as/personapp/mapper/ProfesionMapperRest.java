@@ -8,6 +8,14 @@ import co.edu.javeriana.as.personapp.model.response.ProfesionResponse;
 @Mapper
 public class ProfesionMapperRest {
 
+    public ProfesionResponse fromDomainToAdapterRestMaria(Profession profession) {
+        return fromDomainToAdapterRest(profession, "MariaDB");
+    }
+
+    public ProfesionResponse fromDomainToAdapterRestMongo(Profession profession) {
+        return fromDomainToAdapterRest(profession, "MongoDB");
+    }
+
     public ProfesionResponse fromDomainToAdapterRest(Profession profession, String database) {
         return new ProfesionResponse(
                 String.valueOf(profession.getIdentification()),
@@ -20,7 +28,7 @@ public class ProfesionMapperRest {
 
     public Profession fromAdapterToDomain(ProfesionRequest request) {
         return Profession.builder()
-                .id(Integer.parseInt(request.getId()))
+                .identification(Integer.parseInt(request.getId()))
                 .name(request.getName())
                 .description(request.getDescription())
                 .build();
