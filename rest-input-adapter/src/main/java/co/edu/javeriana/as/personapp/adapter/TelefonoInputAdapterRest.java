@@ -44,6 +44,7 @@ public class TelefonoInputAdapterRest {
     @Qualifier("personOutputAdapterMaria")
     private PersonOutputPort personOutputPortMaria;
 
+    @Autowired
     @Qualifier("personOutputAdapterMongo")
     private PersonOutputPort personOutputPortMongo;
 
@@ -95,30 +96,51 @@ public class TelefonoInputAdapterRest {
 
     public ResponseEntity<?> crearTelefono(TelefonoRequest request, String database) throws NoExistException {
         try {
+            // Configurar la conexión y puertos según la base de datos especificada
             setPhoneOutputPortInjection(database);
-            Optional<Person> personOptional = Optional.ofNullable(personInputPort.findOne(Integer.valueOf(request.getOwnerId())));
-            if (personOptional.isEmpty()) {
-                throw new NoExistException("The person with id " + request.getOwnerId() + " does not exist in the database, cannot be updated");
-            }
-            Person person = personOptional.get();
 
-            if (setPhoneOutputPortInjection(database).equalsIgnoreCase(DatabaseOption.MONGO.toString())) {
-                Phone phone = phoneInputPort.create(telefonoMapperRest.fromAdapterToDomain(request, person), Integer.parseInt(request.getOwnerId()));
-                return ResponseEntity.ok(telefonoMapperRest.fromDomainToAdapterRestMongo(phone));
+            // Verificar si la persona existe en la base de datos especificada
+            Person person;
+            if (database.equalsIgnoreCase(DatabaseOption.MARIA.toString())) {
+                person = personOutputPortMaria.findById(Integer.valueOf(request.getOwnerId()));
+                if (person == null) {
+                    throw new NoExistException("The person with id " + request.getOwnerId() + " does not exist in MariaDB.");
+                }
+            } else if (database.equalsIgnoreCase(DatabaseOption.MONGO.toString())) { // usar DatabaseOption.MONGO
+                person = personOutputPortMongo.findById(Integer.valueOf(request.getOwnerId()));
+                if (person == null) {
+                    throw new NoExistException("The person with id " + request.getOwnerId() + " does not exist in MongoDB.");
+                }
+            } else {
+                throw new InvalidOptionException("Invalid database option: " + database);
             }
-            else{
-                Phone phone = phoneInputPort.create(telefonoMapperRest.fromAdapterToDomain(request, person), Integer.parseInt(request.getOwnerId()));
-                return ResponseEntity.ok(telefonoMapperRest.fromDomainToAdapterRestMaria(phone));
-            }
+
+            // Crear el teléfono en la base de datos especificada
+            Phone phone = phoneInputPort.create(telefonoMapperRest.fromAdapterToDomain(request, person), Integer.parseInt(request.getOwnerId()));
+
+            // Retornar la respuesta de acuerdo a la base de datos
+            TelefonoResponse response = database.equalsIgnoreCase(DatabaseOption.MARIA.toString()) ?
+                    telefonoMapperRest.fromDomainToAdapterRestMaria(phone) :
+                    telefonoMapperRest.fromDomainToAdapterRestMongo(phone);
+
+            return ResponseEntity.ok(response);
+
         } catch (InvalidOptionException e) {
             log.warn(e.getMessage());
-        }
-        catch (NoExistException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new Response(HttpStatus.BAD_REQUEST.toString(), "Invalid database option", LocalDateTime.now()));
+        } catch (NoExistException e) {
+            log.warn(e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new Response(HttpStatus.NOT_FOUND.toString(), "ID of owner not found", LocalDateTime.now()));
+                    .body(new Response(HttpStatus.NOT_FOUND.toString(), e.getMessage(), LocalDateTime.now()));
+        } catch (Exception e) {
+            log.error("Unexpected error while creating phone: ", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new Response(HttpStatus.INTERNAL_SERVER_ERROR.toString(), "Internal server error", LocalDateTime.now()));
         }
-        return null;
     }
+
+
 
     public ResponseEntity<?> obtenerTelefono(String database, String number) throws NoExistException {
         try {
