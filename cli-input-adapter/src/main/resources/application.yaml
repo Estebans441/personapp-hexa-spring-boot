@@ -1,0 +1,31 @@
+# Logging config
+logging:
+    level:
+        root: INFO
+    file:
+        name: logs/persona.log
+
+# Bean reference Config
+spring:
+    main:
+        allow-circular-references: true
+
+    datasource:
+        url: jdbc:mariadb://${MariaDBHOST:localhost}:3307/persona_db
+        username: persona_db
+        password: persona_db
+        driver-class-name: org.mariadb.jdbc.Driver
+
+    jpa:
+        hibernate:
+            ddl-auto: none
+        open-in-view: false
+
+    data:
+        mongodb:
+            authentication-database: admin
+            username: persona_db
+            password: persona_db
+            database: persona_db
+            port: 27017
+            host: ${MongoDBHOST:localhost}
