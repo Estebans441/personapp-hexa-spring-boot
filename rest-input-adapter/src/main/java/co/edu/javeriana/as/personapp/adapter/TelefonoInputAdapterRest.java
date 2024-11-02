@@ -50,16 +50,24 @@ public class TelefonoInputAdapterRest {
     @Autowired
     private TelefonoMapperRest telefonoMapperRest;
 
+    @Autowired
     private PhoneInputPort phoneInputPort;
 
+    @Autowired
     private PersonInputPort personInputPort;
 
     private String setPhoneOutputPortInjection(String dbOption) throws InvalidOptionException {
         if (dbOption.equalsIgnoreCase(DatabaseOption.MARIA.toString())) {
+            if (phoneOutputPortMaria == null || personOutputPortMaria == null) {
+                throw new InvalidOptionException("MariaDB output ports are not properly initialized.");
+            }
             phoneInputPort = new PhoneUseCase(phoneOutputPortMaria, personOutputPortMaria);
             personInputPort = new PersonUseCase(personOutputPortMaria);
             return DatabaseOption.MARIA.toString();
         } else if (dbOption.equalsIgnoreCase(DatabaseOption.MONGO.toString())) {
+            if (phoneOutputPortMongo == null || personOutputPortMongo == null) {
+                throw new InvalidOptionException("MongoDB output ports are not properly initialized.");
+            }
             phoneInputPort = new PhoneUseCase(phoneOutputPortMongo, personOutputPortMongo);
             personInputPort = new PersonUseCase(personOutputPortMongo);
             return DatabaseOption.MONGO.toString();
@@ -93,10 +101,15 @@ public class TelefonoInputAdapterRest {
                 throw new NoExistException("The person with id " + request.getOwnerId() + " does not exist in the database, cannot be updated");
             }
             Person person = personOptional.get();
-            Phone phone = phoneInputPort.create(telefonoMapperRest.fromAdapterToDomain(request, person), Integer.parseInt(request.getOwnerId()));
-            return ResponseEntity.ok(database.equalsIgnoreCase(DatabaseOption.MARIA.toString()) ?
-                    telefonoMapperRest.fromDomainToAdapterRestMaria(phone) :
-                    telefonoMapperRest.fromDomainToAdapterRestMongo(phone));
+
+            if (setPhoneOutputPortInjection(database).equalsIgnoreCase(DatabaseOption.MONGO.toString())) {
+                Phone phone = phoneInputPort.create(telefonoMapperRest.fromAdapterToDomain(request, person), Integer.parseInt(request.getOwnerId()));
+                return ResponseEntity.ok(telefonoMapperRest.fromDomainToAdapterRestMongo(phone));
+            }
+            else{
+                Phone phone = phoneInputPort.create(telefonoMapperRest.fromAdapterToDomain(request, person), Integer.parseInt(request.getOwnerId()));
+                return ResponseEntity.ok(telefonoMapperRest.fromDomainToAdapterRestMaria(phone));
+            }
         } catch (InvalidOptionException e) {
             log.warn(e.getMessage());
         }
