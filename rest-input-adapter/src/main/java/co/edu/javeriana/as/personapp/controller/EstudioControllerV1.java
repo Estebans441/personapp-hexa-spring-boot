@@ -32,8 +32,8 @@ public class EstudioControllerV1 {
     }
 
     @ResponseBody
-    @PostMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> crearEstudio(@RequestBody EstudioRequest request, @RequestParam String database) {
+    @PostMapping(path = "/{database}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> crearEstudio(@RequestBody EstudioRequest request, @PathVariable String database) {
         log.info("Creating a new study in database: {}", database);
         return estudioInputAdapterRest.crearEstudio(request, database.toUpperCase());
     }

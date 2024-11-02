@@ -33,10 +33,10 @@ public class PersonaControllerV1 {
 	}
 	
 	@ResponseBody
-	@PostMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public PersonaResponse crearPersona(@RequestBody PersonaRequest request) {
+	@PostMapping(path = "/{database}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public PersonaResponse crearPersona(@RequestBody PersonaRequest request, @PathVariable String database) {
 		log.info("esta en el metodo crearTarea en el controller del api");
-		return personaInputAdapterRest.crearPersona(request);
+		return personaInputAdapterRest.crearPersona(request, database);
 	}
 
 	@ResponseBody

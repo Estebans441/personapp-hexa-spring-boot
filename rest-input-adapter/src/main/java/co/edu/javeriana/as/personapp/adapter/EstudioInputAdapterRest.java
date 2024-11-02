@@ -25,7 +25,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
@@ -37,38 +36,29 @@ import java.util.stream.Collectors;
 @Slf4j
 @Adapter
 public class EstudioInputAdapterRest {
-
     @Autowired
     @Qualifier("studyOutPutAdapterMaria")
     private StudyOutputPort studyOutputPortMaria;
-
     @Autowired
     @Qualifier("studyOutputAdapterMongo")
     private StudyOutputPort studyOutputPortMongo;
-
     @Autowired
     @Qualifier("personOutputAdapterMaria")
     private PersonOutputPort personOutputPortMaria;
-
     @Autowired
     @Qualifier("personOutputAdapterMongo")
     private PersonOutputPort personOutputPortMongo;
-
     @Autowired
     @Qualifier("profesionOutPutAdapterMaria")
     private ProfessionOutputPort professionOutputPortMaria;
-
     @Autowired
     @Qualifier("profesionOutPutAdapterMongo")
     private ProfessionOutputPort professionOutputPortMongo;
-
     @Autowired
     private EstudioMapperRest estudioMapperRest;
-
     private StudyInputPort studyInputPort;
     private PersonInputPort personInputPort;
     private ProfessionInputPort professionInputPort;
-
     private String setStudyOutputPortInjection(String dbOption) throws InvalidOptionException {
         if (dbOption.equalsIgnoreCase(DatabaseOption.MARIA.toString())) {
             studyInputPort = new StudyUseCase(studyOutputPortMaria, personOutputPortMaria, professionOutputPortMaria);
@@ -193,8 +183,6 @@ public class EstudioInputAdapterRest {
             if (personOptional.isEmpty() || professionOptional.isEmpty()) {
                 throw new NoExistException("Person or Profession not found, cannot update study.");
             }
-
-            // Build the updated study
             Study updatedStudy = Study.builder()
                     .person(personOptional.get())
                     .profession(professionOptional.get())
@@ -214,7 +202,6 @@ public class EstudioInputAdapterRest {
                     .body(new Response(HttpStatus.INTERNAL_SERVER_ERROR.toString(), "Internal server error", LocalDateTime.now()));
         }
     }
-
     public ResponseEntity<?> eliminarEstudio(String database, int ccPerson, int idProf) throws NoExistException, InvalidOptionException {
         setStudyOutputPortInjection(database);
         Optional<Study> study = Optional.ofNullable(studyInputPort.findOne(idProf, ccPerson));
@@ -225,7 +212,6 @@ public class EstudioInputAdapterRest {
         return ResponseEntity.ok(new Response(HttpStatus.OK.toString(),
                 "Study deleted successfully", LocalDateTime.now()));
     }
-
     public ResponseEntity<?> contarEstudios(String database) {
         try {
             setStudyOutputPortInjection(database);

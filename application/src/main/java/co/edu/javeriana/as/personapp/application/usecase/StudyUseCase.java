@@ -49,9 +49,9 @@ public class StudyUseCase implements StudyInputPort {
         study.setProfession(profession);
         return studyPersistence.save(study);
     }
+
     @Override
     public Study edit(Integer identification, Integer user_identificacion, Study study) {
-        //System.out.println("Estoy aqui");
         Study oldStudy = studyPersistence.findById(identification, user_identificacion);
         if (oldStudy != null)
             return studyPersistence.save(study);

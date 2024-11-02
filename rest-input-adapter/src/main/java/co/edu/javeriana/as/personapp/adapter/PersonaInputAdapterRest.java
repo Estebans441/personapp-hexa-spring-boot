@@ -75,11 +75,16 @@ public class PersonaInputAdapterRest {
 		}
 	}
 
-	public PersonaResponse crearPersona(PersonaRequest request) {
+	public PersonaResponse crearPersona(PersonaRequest request, String database) {
 		try {
-			setPersonOutputPortInjection(request.getDatabase());
-			Person person = personInputPort.create(personaMapperRest.fromAdapterToDomain(request));
-			return personaMapperRest.fromDomainToAdapterRestMaria(person);
+			if (setPersonOutputPortInjection(database).equalsIgnoreCase(DatabaseOption.MONGO.toString())) {
+				Person person = personInputPort.create(personaMapperRest.fromAdapterToDomain(request));
+				return personaMapperRest.fromDomainToAdapterRestMongo(person);
+			}
+			else{
+				Person person = personInputPort.create(personaMapperRest.fromAdapterToDomain(request));
+				return personaMapperRest.fromDomainToAdapterRestMaria(person);
+			}
 		} catch (InvalidOptionException e) {
 			log.warn(e.getMessage());
 			//return new PersonaResponse("", "", "", "", "", "", "");
