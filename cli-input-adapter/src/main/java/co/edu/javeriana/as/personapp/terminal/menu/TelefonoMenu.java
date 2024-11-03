@@ -91,6 +91,7 @@ public class TelefonoMenu {
 
     private void crearTelefono(TelefonoInputAdapterCli telefonoInputAdapterCli, Scanner keyboard) {
         try {
+            keyboard.nextLine();
             System.out.print("Ingrese el número de teléfono: ");
             String number = keyboard.nextLine();
             System.out.print("Ingrese la compañía: ");
@@ -117,6 +118,7 @@ public class TelefonoMenu {
     }
 
     private void editarTelefono(TelefonoInputAdapterCli telefonoInputAdapterCli, Scanner keyboard) throws NoExistException {
+        keyboard.nextLine();
         System.out.print("Ingrese el número de teléfono a editar: ");
         String number = keyboard.nextLine();
         System.out.print("Ingrese la nueva compañía: ");
@@ -129,6 +131,7 @@ public class TelefonoMenu {
     }
 
     private void eliminarTelefono(TelefonoInputAdapterCli telefonoInputAdapterCli, Scanner keyboard) throws NoExistException {
+        keyboard.nextLine();
         System.out.print("Ingrese el número de teléfono a eliminar: ");
         String number = keyboard.nextLine();
 
