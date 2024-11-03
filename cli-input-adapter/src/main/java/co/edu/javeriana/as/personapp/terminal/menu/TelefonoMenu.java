@@ -92,11 +92,12 @@ public class TelefonoMenu {
     private void crearTelefono(TelefonoInputAdapterCli telefonoInputAdapterCli, Scanner keyboard) {
         try {
             System.out.print("Ingrese el número de teléfono: ");
-            String number = keyboard.next();
+            String number = keyboard.nextLine();
             System.out.print("Ingrese la compañía: ");
-            String company = keyboard.next();
+            String company = keyboard.nextLine();
             System.out.print("Ingrese el ID del dueño del teléfono: ");
             int owner = keyboard.nextInt();
+            keyboard.nextLine(); // Limpiar buffer de entrada
 
             telefonoInputAdapterCli.create(number, company, owner);
             System.out.println("Teléfono creado con éxito.");
@@ -117,18 +118,19 @@ public class TelefonoMenu {
 
     private void editarTelefono(TelefonoInputAdapterCli telefonoInputAdapterCli, Scanner keyboard) throws NoExistException {
         System.out.print("Ingrese el número de teléfono a editar: ");
-        String number = keyboard.next();
+        String number = keyboard.nextLine();
         System.out.print("Ingrese la nueva compañía: ");
-        String company = keyboard.next();
+        String company = keyboard.nextLine();
         System.out.print("Ingrese el nuevo ID del dueño del teléfono: ");
         int owner = keyboard.nextInt();
+        keyboard.nextLine(); // Limpiar buffer de entrada
 
         telefonoInputAdapterCli.edit(number, company, owner);
     }
 
     private void eliminarTelefono(TelefonoInputAdapterCli telefonoInputAdapterCli, Scanner keyboard) throws NoExistException {
         System.out.print("Ingrese el número de teléfono a eliminar: ");
-        String number = keyboard.next();
+        String number = keyboard.nextLine();
 
         telefonoInputAdapterCli.drop(number);
     }

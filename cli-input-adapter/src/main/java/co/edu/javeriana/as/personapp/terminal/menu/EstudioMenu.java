@@ -90,14 +90,16 @@ public class EstudioMenu {
 
     private void crearEstudio(EstudioInputAdapterCli estudioInputAdapterCli, Scanner keyboard) {
         try {
+            keyboard.nextLine();
             System.out.print("Ingrese el número de identificación de la persona: ");
             int ccPerson = keyboard.nextInt();
             System.out.print("Ingrese el número de identificación de la profesión: ");
             int idProfession = keyboard.nextInt();
+            keyboard.nextLine();
             System.out.print("Ingrese el nombre de la universidad: ");
-            String college = keyboard.next();
+            String college = keyboard.nextLine();
             System.out.print("Ingrese la fecha de graduación (yyyy-mm-dd): ");
-            String date = keyboard.next();
+            String date = keyboard.nextLine();
             estudioInputAdapterCli.create(ccPerson, idProfession, college, LocalDate.parse(date));
         } catch (InputMismatchException e) {
             log.warn("Solo se permiten números.");
@@ -139,6 +141,7 @@ public class EstudioMenu {
 
     private void editarEstudio(EstudioInputAdapterCli estudioInputAdapterCli, Scanner keyboard) {
         try {
+            keyboard.nextLine();
             System.out.print("Ingrese el ID de la profesion del estudio: ");
             int idProfession = keyboard.nextInt();
 

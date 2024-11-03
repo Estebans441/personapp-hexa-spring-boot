@@ -13,6 +13,8 @@ public class PersonaMapperCli {
 				.cc(person.getIdentification())
 				.nombre(person.getFirstName())
 				.apellido(person.getLastName())
+				.genero(String.valueOf(parseGender(String.valueOf(person.getGender()))))
+				.edad(person.getAge())
 				.build() : null;
 	}
 
@@ -22,6 +24,7 @@ public class PersonaMapperCli {
 				.firstName(personaModelCli.getNombre())
 				.lastName(personaModelCli.getApellido())
 				.gender(personaModelCli.getGenero() != null ? parseGender(personaModelCli.getGenero()) : Gender.OTHER)
+				.age(personaModelCli.getEdad())
 				.build() : null;
 	}
 	private Gender parseGender(String genero) {

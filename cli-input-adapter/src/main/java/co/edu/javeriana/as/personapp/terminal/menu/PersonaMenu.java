@@ -120,14 +120,16 @@ public class PersonaMenu {
 		keyboard.nextLine(); // Limpiar el buffer
 		System.out.print("Ingrese el número de identificación de la persona a editar: ");
 		int cc = keyboard.nextInt();
+		keyboard.nextLine();
 		System.out.print("Ingrese el nuevo nombre: ");
-		String nombre = keyboard.next();
+		String nombre = keyboard.nextLine();
 		System.out.print("Ingrese el nuevo apellido: ");
-		String apellido = keyboard.next();
+		String apellido = keyboard.nextLine();
 		System.out.print("Ingrese el nuevo género (M/F): ");
-		String genero = keyboard.next();
+		String genero = keyboard.nextLine();
 		System.out.print("Ingrese la nueva edad: ");
 		Integer edad = keyboard.nextInt();
+		keyboard.nextLine();
 
 		personaInputAdapterCli.edit(cc, nombre, apellido, genero, edad);
 		System.out.println("Persona editada con éxito.");
