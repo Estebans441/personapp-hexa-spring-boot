@@ -40,6 +40,37 @@ services:
       - ./scripts/persona_dml_maria.sql:/docker-entrypoint-initdb.d/02_persona_dml_maria.sql
     restart: always
 
+  personapp-cli-service:
+    image: personapp-cli-service
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: personapp-cli-service
+    environment:
+      - MARIADB_HOST=mariadb
+      - MARIADB_PORT=3306
+      - MONGODB_HOST=mongo
+      - MONGODB_PORT=27017
+      - APP_TYPE=/cli/app.jar
+    depends_on:
+      - mariadb
+      - mongo
+
+  personapp-rest-service:
+    image: personapp-rest-service
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: personapp-rest-service
+    environment:
+      - MARIADB_HOST=mariadb
+      - MARIADB_PORT=3306
+      - MONGODB_HOST=mongo
+      - MONGODB_PORT=27017
+      - APP_TYPE=/rest/app.jar
+    depends_on:
+      - mariadb
+      - mongo
 volumes:
   maria_data:
   mongo_data:

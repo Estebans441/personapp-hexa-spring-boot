@@ -11,7 +11,7 @@ spring:
         allow-circular-references: true
 
     datasource:
-        url: jdbc:mariadb://${MariaDBHOST:localhost}:3307/persona_db
+        url: jdbc:mariadb://${MARIADB_HOST:localhost}:${MARIADB_PORT:3307}/persona_db
         username: persona_db
         password: persona_db
         driver-class-name: org.mariadb.jdbc.Driver
@@ -27,5 +27,5 @@ spring:
             username: persona_db
             password: persona_db
             database: persona_db
-            port: 27017
-            host: ${MongoDBHOST:localhost}
+            port: ${MONGODB_PORT:27017}
+            host: ${MONGODB_HOST:localhost}
